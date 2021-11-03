@@ -1,0 +1,34 @@
+correcciones:
+	-en servicio, agregar anotacion @service
+	-controlador, agregar anotacion para rest controller
+		-agregar requestmapping
+		-agregar instancia de servicio
+		-crear constructor, agregando el servicio
+		-crear funciones para cada funcion definida en servicio
+		-funcion para llamar e imprimir usuario por id
+		
+		
+	-descargar postman
+	
+-leer sobre:
+	CrudRepository
+	como instanciar
+	h2
+	requestbody
+	postmapping
+	getmapping
+	deletemapping
+	
+-crear un metodo update
+-mostrar la info del usuario
+
+
+-funcion para imprimir todo el usuario
+-modificar funciones para imprimir usuario + numero(s)deseados
+-conectar con postrges
+
+-agregar condicionales en las funciones
+-verificar que exista el id
+-estudiar response 
+
+(verificar que el array no este vacio, que este dentro del array, que verifique que es numero)

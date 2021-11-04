@@ -32,3 +32,6 @@ correcciones:
 -estudiar response 
 
 (verificar que el array no este vacio, que este dentro del array, que verifique que es numero)
+
+
+la lista debe siempre tener almenos un valor

@@ -32,27 +32,32 @@ public class EntityControllers {
 	}
 
 	@PostMapping(value = "/addUser")
-	public MyEntity addNewUser(@RequestBody MyEntity entity) {
-		return servicio.saveUser(entity);
+	public ResponseEntity<?> addNewUser(@RequestBody MyEntity entity) {
+		if(entity.getNumList().size() != 0) {
+			servicio.saveUser(entity);
+			return new ResponseEntity<>("User saved!",HttpStatus.OK);
+		}
+			return new ResponseEntity<>("Check the numlist, must have at least 1 number",HttpStatus.BAD_REQUEST);
+		
 	}
 
 	@PutMapping(value = "/updateUser/{id}")
-	public ResponseEntity<String> updateUser(@RequestBody MyEntity entity, @PathVariable(value = "id") Integer id) {
+	public ResponseEntity<?> updateUser(@RequestBody MyEntity entity, @PathVariable(value = "id") Integer id) {
 		// checar ID
-		try {
-			if (servicio.existId(id)) {
-				servicio.updateUser(entity, id);
-				return new ResponseEntity<>("the user: " + id + " has been updated: " + entity.getName() + " " + entity.getNumList(),HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("the user: " + id + " doesn´t exist", HttpStatus.BAD_REQUEST);
-				}
-		}catch(HttpMessageNotReadableException e) {
-			return new ResponseEntity<>("check the numlist, must have only numbers",HttpStatus.NOT_ACCEPTABLE);
+		if (servicio.existId(id)) {
+			servicio.updateUser(entity, id);
+			return new ResponseEntity<>(
+					"the user: " + id + " has been updated: " 
+					+ entity.getName() + " " 
+					+ entity.getNumList(),
+					HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>("the user: " + id + " doesn´t exist", HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@DeleteMapping(value = "/deleteUser/{id}")
-	public ResponseEntity<String> deleteUserById(@PathVariable(value = "id") Integer id) {
+	public ResponseEntity<?> deleteUserById(@PathVariable(value = "id") Integer id) {
 		if (servicio.existId(id)) {
 			return new ResponseEntity<>(servicio.deleteUserbyId(id), HttpStatus.OK);
 		} else {
@@ -63,7 +68,7 @@ public class EntityControllers {
 	}
 
 	@GetMapping(value = "/printUser/{id}")
-	public ResponseEntity<String> printUser(@PathVariable(value = "id") Integer id) {
+	public ResponseEntity<?> printUser(@PathVariable(value = "id") Integer id) {
 		if (servicio.existId(id)) {
 			return new ResponseEntity<>(printUserData(id),HttpStatus.OK);
 		} else {
@@ -78,7 +83,7 @@ public class EntityControllers {
 	}
 
 	@GetMapping(value = "/maxNum/{id}")
-	public ResponseEntity<String> maxNum(@PathVariable(value = "id") Integer id) {
+	public ResponseEntity<?> maxNum(@PathVariable(value = "id") Integer id) {
 		if (servicio.existId(id)) {
 			if (servicio.checkEmptyList(id)) {
 				return new ResponseEntity<>(printUserData(id) + "\n the Max num on the list is: " + servicio.maxValue(id),HttpStatus.OK);
@@ -104,7 +109,7 @@ public class EntityControllers {
 	}
 
 	@GetMapping(value = "/repeatedNums/{id}")
-	public ResponseEntity<String> repeatedNums(@PathVariable(value = "id") Integer id) {
+	public ResponseEntity<?> repeatedNums(@PathVariable(value = "id") Integer id) {
 		if (servicio.existId(id)) {
 			if (servicio.checkEmptyList(id)) {
 				if (servicio.repeatedValues(id).size() == 0) {

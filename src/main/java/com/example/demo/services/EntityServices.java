@@ -69,13 +69,5 @@ public class EntityServices {
 	public boolean existId(int id) {
 		return entInter.existsById(id);
 	}
-	
-	public boolean checkIfNum(String id) {
-		try {
-			Integer.parseInt(id);
-			return true;
-		}catch(NumberFormatException e) {
-			return false;
-		}
-	}
+
 }

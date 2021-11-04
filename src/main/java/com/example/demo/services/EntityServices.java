@@ -58,8 +58,8 @@ public class EntityServices {
 		return (List<MyEntity>) entInter.findAll();
 	}
 	
-	public boolean checkEmptyList(int id) {
-		if(getUserById(id).getNumList() == null || getUserById(id).getNumList().size() == 0) {
+	public boolean checkEmptyList(MyEntity entity) {
+		if(entity.getNumList() == null || entity.getNumList().size() == 0) {
 			return false;
 		}else {
 			return true;

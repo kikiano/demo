@@ -34,7 +34,7 @@ public class EntityControllers {
 
 	@PostMapping(value = "/addUser")
 	public ResponseEntity<?> addNewUser(@RequestBody MyEntity entity) {
-		if(servicio.checkEmptyList(entity.getId())) {
+		if(servicio.checkEmptyList(entity)) {
 			servicio.saveUser(entity);
 			return new ResponseEntity<>("User saved!",HttpStatus.OK);
 		}

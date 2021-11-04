@@ -35,3 +35,4 @@ correcciones:
 
 
 la lista debe siempre tener almenos un valor
+entrar a custom endpoint

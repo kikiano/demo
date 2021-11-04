@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class EntityControllers {
 
 	@PostMapping(value = "/addUser")
 	public ResponseEntity<?> addNewUser(@RequestBody MyEntity entity) {
-		if(entity.getNumList().size() != 0) {
+		if(servicio.checkEmptyList(entity.getId())) {
 			servicio.saveUser(entity);
 			return new ResponseEntity<>("User saved!",HttpStatus.OK);
 		}
@@ -43,38 +44,26 @@ public class EntityControllers {
 
 	@PutMapping(value = "/updateUser/{id}")
 	public ResponseEntity<?> updateUser(@RequestBody MyEntity entity, @PathVariable(value = "id") Integer id) {
-		// checar ID
-		if (servicio.existId(id)) {
+		if(servicio.existId(id)) {
 			servicio.updateUser(entity, id);
 			return new ResponseEntity<>(
 					"the user: " + id + " has been updated: " 
 					+ entity.getName() + " " 
 					+ entity.getNumList(),
 					HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("the user: " + id + " doesn´t exist", HttpStatus.BAD_REQUEST);
+		}else {
+			return new ResponseEntity<>("Enter an existant ID",HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@DeleteMapping(value = "/deleteUser/{id}")
 	public ResponseEntity<?> deleteUserById(@PathVariable(value = "id") Integer id) {
-		if (servicio.existId(id)) {
-			return new ResponseEntity<>(servicio.deleteUserbyId(id), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("the user can´t be deleted because it doesn´t even exist! >:(",
-					HttpStatus.NOT_FOUND);
-		}
-
+		return new ResponseEntity<>(servicio.deleteUserbyId(id), HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/printUser/{id}")
 	public ResponseEntity<?> printUser(@PathVariable(value = "id") Integer id) {
-		if (servicio.existId(id)) {
-			return new ResponseEntity<>(printUserData(id),HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>("the Id granted doesn´t exist",HttpStatus.OK);
-		}
-
+		return new ResponseEntity<>(printUserData(id),HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/printAll")
@@ -84,46 +73,27 @@ public class EntityControllers {
 
 	@GetMapping(value = "/maxNum/{id}")
 	public ResponseEntity<?> maxNum(@PathVariable(value = "id") Integer id) {
-		if (servicio.existId(id)) {
-			if (servicio.checkEmptyList(id)) {
-				return new ResponseEntity<>(printUserData(id) + "\n the Max num on the list is: " + servicio.maxValue(id),HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("The user " + id + " has no numlist",HttpStatus.OK);
-			}
-		} else {
-			return new ResponseEntity<>("the Id you are looking for, doesn´t exist",HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<>(printUserData(id) + "\n the Max num on the list is: " + servicio.maxValue(id),HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/firstNum/{id}")
 	public ResponseEntity<String> firstNum(@PathVariable(value = "id") Integer id) {
-		if (servicio.existId(id)) {
-			if (servicio.checkEmptyList(id)) {
-				return new ResponseEntity<>(printUserData(id) + "\n the first value of the list is: " + servicio.firstValue(id),HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>("The user " + id + " has no numlist",HttpStatus.OK);
-			}
-		} else {
-			return new ResponseEntity<>("the Id you are looking for, doesn´t exist",HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<>(printUserData(id) + "\n the first value of the list is: " + servicio.firstValue(id),HttpStatus.OK);
+			
 	}
 
 	@GetMapping(value = "/repeatedNums/{id}")
 	public ResponseEntity<?> repeatedNums(@PathVariable(value = "id") Integer id) {
-		if (servicio.existId(id)) {
-			if (servicio.checkEmptyList(id)) {
-				if (servicio.repeatedValues(id).size() == 0) {
-					return new ResponseEntity<>(printUserData(id) + "the numlist of this user has no repeated numbers",HttpStatus.OK);
-				} else {
-					return new ResponseEntity<>(printUserData(id) + "\n the repeated values on the list are: " + servicio.repeatedValues(id),HttpStatus.OK);
-				}
+			if (servicio.repeatedValues(id).size() == 0) {
+				return new ResponseEntity<>(printUserData(id) 
+						+ "the numlist of this user has no repeated numbers",
+						HttpStatus.OK);
 			} else {
-				return new ResponseEntity<>("The user " + id + " has no numlist",HttpStatus.OK);
+				return new ResponseEntity<>(
+						printUserData(id) 
+						+ "\n the repeated values on the list are: " 
+						+ servicio.repeatedValues(id), HttpStatus.OK);
 			}
-		} else {
-			return new ResponseEntity<>("the Id you are looking for, doesn´t exist",HttpStatus.NOT_FOUND);
-		}
-
 	}
 
 	public String printUserData(Integer id) {
@@ -140,7 +110,15 @@ public class EntityControllers {
 	}
 	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
 	public ResponseEntity<?> MethodArgumentTypeMismatchExceptionHandler(){
-		return new ResponseEntity<>("must enter a valid id", HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>("ID must be a number", HttpStatus.BAD_REQUEST);
+	}
+	@ExceptionHandler(NoSuchElementException.class)
+	public ResponseEntity<?> NoSuchElementExceptionHandler(){
+		return new ResponseEntity<>("The ID doesnt´t exists", HttpStatus.NOT_FOUND);
+	}
+	@ExceptionHandler(NullPointerException.class)
+	public ResponseEntity<?> NullPointerExceptionHandler(){
+		return new ResponseEntity<>("the user has a null value, please check",HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 }

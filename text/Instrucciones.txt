@@ -36,3 +36,6 @@ correcciones:
 
 la lista debe siempre tener almenos un valor
 entrar a custom endpoint
+
+leer sobre como hacer testing de apps
+apis como jUnit, mockito

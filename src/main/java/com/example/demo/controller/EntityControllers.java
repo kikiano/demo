@@ -39,7 +39,6 @@ public class EntityControllers {
 			return new ResponseEntity<>("User saved!",HttpStatus.OK);
 		}
 			return new ResponseEntity<>("Check the numlist, must have at least 1 number",HttpStatus.BAD_REQUEST);
-		
 	}
 
 	@PutMapping(value = "/updateUser/{id}")
@@ -77,7 +76,7 @@ public class EntityControllers {
 	}
 
 	@GetMapping(value = "/firstNum/{id}")
-	public ResponseEntity<String> firstNum(@PathVariable(value = "id") Integer id) {
+	public ResponseEntity<?> firstNum(@PathVariable(value = "id") Integer id) {
 		return new ResponseEntity<>(printUserData(id) + "\n the first value of the list is: " + servicio.firstValue(id),HttpStatus.OK);
 			
 	}
